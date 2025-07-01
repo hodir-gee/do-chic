@@ -23,7 +23,7 @@ generateButton.addEventListener('click', async () => {
     return;
   }
 
-  const response = await fetch('https://YOUR_WORKER_URL', {
+  const response = await fetch('https://do-chic-api.gr8-honour.workers.dev', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ keywords, target, season, brand, style: selectedStyle })
