@@ -22,7 +22,7 @@ module.exports = async function handler(req, res) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        Authorization: `Bearer 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`,
       },
       body: JSON.stringify({
         model: "gpt-4",
