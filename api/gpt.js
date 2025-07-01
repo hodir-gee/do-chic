@@ -1,11 +1,19 @@
+const getRequestBody = async (req) => {
+  const buffers = [];
+  for await (const chunk of req) {
+    buffers.push(chunk);
+  }
+  const data = Buffer.concat(buffers).toString();
+  return JSON.parse(data);
+};
+
 module.exports = async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
   try {
-    // 여기 수정
-    const { keywords, season, place, style } = req.body;
+    const { keywords, season, place, style } = await getRequestBody(req);
 
     const prompt = `
 다음 조건에 맞는 감각적이고 세련된 패션 기획전 이름을 추천해줘.
