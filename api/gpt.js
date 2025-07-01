@@ -11,16 +11,18 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  let body = '';
+  let body;
   try {
-    body = await new Promise((resolve, reject) => {
-      req.on('data', chunk => (body += chunk));
-      req.on('end', () => resolve(body));
-      req.on('error', reject);
-    });
-    body = JSON.parse(body);
+    body = req.body;
+    if (!body) {
+      const buffers = [];
+      for await (const chunk of req) {
+        buffers.push(chunk);
+      }
+      body = JSON.parse(Buffer.concat(buffers).toString());
+    }
   } catch (err) {
-    return res.status(400).json({ error: 'Invalid JSON' });
+    return res.status(400).json({ error: 'Invalid JSON body' });
   }
 
   const { keywords, season, place, style } = body;
@@ -41,7 +43,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': \`Bearer \${process.env.OPENAI_API_KEY}\`,
+        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
       },
       body: JSON.stringify({
         model: 'gpt-4o',
