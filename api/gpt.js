@@ -1,48 +1,65 @@
 export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
+    return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
   let body = '';
   try {
     body = await new Promise((resolve, reject) => {
-      let data = '';
-      req.on('data', chunk => (data += chunk));
-      req.on('end', () => resolve(JSON.parse(data)));
+      req.on('data', chunk => (body += chunk));
+      req.on('end', () => resolve(body));
       req.on('error', reject);
     });
+    body = JSON.parse(body);
   } catch (err) {
     return res.status(400).json({ error: 'Invalid JSON' });
   }
 
   const { keywords, season, place, style } = body;
 
-  const prompt = `당신은 패션 기획자입니다. 다음 요소를 반영한 패션 기획전 제목을 하나 만들어주세요.
+  const prompt = `
+다음 조건에 맞는 감각적이고 세련된 패션 기획전 이름을 추천해줘.
+
 - 키워드: ${keywords}
-- 시즌: ${season}
+- 계절: ${season}
 - 장소: ${place}
 - 스타일: ${style}
-제목만 간결하게 한 줄로 생성해주세요.`;
+
+최대한 짧고 임팩트 있게, 트렌디한 느낌으로 만들어줘. 한글로 3개만 제안해줘.
+`;
 
   try {
-    const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${process.env.OPENAI_API_KEY}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': \`Bearer \${process.env.OPENAI_API_KEY}\`,
       },
       body: JSON.stringify({
         model: 'gpt-4o',
         messages: [{ role: 'user', content: prompt }],
-        temperature: 0.7
-      })
+        temperature: 0.8,
+      }),
     });
 
-    const data = await openaiRes.json();
-    const result = data.choices?.[0]?.message?.content ?? '작명 실패';
+    const data = await response.json();
 
+    if (!response.ok) {
+      return res.status(response.status).json({ error: data });
+    }
+
+    const result = data.choices?.[0]?.message?.content?.trim();
     return res.status(200).json({ result });
   } catch (error) {
-    return res.status(500).json({ error: 'OpenAI 요청 실패', detail: error.message });
+    console.error('API 호출 실패:', error);
+    return res.status(500).json({ error: 'Internal Server Error' });
   }
 }

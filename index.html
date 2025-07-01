@@ -1,43 +1,31 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Let's DO-CHIC</title>
-  <script defer src="script.js"></script>
+  <meta charset="UTF-8">
+  <title>DO-CHIC 작명 도구</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <style>
-    body {
-      font-family: 'Georgia', 'Times New Roman', serif;
-      letter-spacing: -0.2px;
-    }
-  </style>
 </head>
-<body class="bg-white text-black px-6 py-16 max-w-2xl mx-auto space-y-8">
+<body class="bg-white text-gray-800 p-6">
+  <div class="max-w-xl mx-auto">
+    <h1 class="text-2xl font-bold mb-4">DO-CHIC 패션 작명</h1>
 
-  <h1 class="text-4xl font-serif font-bold tracking-tight text-center">Let's DO-CHIC</h1>
-  <p class="text-center text-gray-500 text-sm">오픈이 코앞인데 기획전명이 고민인 당신을 위한 시크한 솔루션</p>
+    <input id="keywords" class="border p-2 w-full mb-2" placeholder="키워드 (예: 우아함, 모던 등)" />
+    <input id="season" class="border p-2 w-full mb-2" placeholder="계절 (예: 여름)" />
+    <input id="place" class="border p-2 w-full mb-4" placeholder="장소 (예: 서울 현대백화점)" />
 
-  <div class="space-y-6">
-    <input id="keywords" class="w-full border-b border-black p-3 focus:outline-none placeholder-gray-400" placeholder="기획전 키워드 (예: 레트로 / 데님 / 썸머)" />
-    <input id="target" class="w-full border-b border-black p-3 focus:outline-none placeholder-gray-400" placeholder="타겟층 (예: 20대 여성)" />
-    <input id="season" class="w-full border-b border-black p-3 focus:outline-none placeholder-gray-400" placeholder="계절 (예: 여름)" />
-    <input id="brand" class="w-full border-b border-black p-3 focus:outline-none placeholder-gray-400" placeholder="브랜드 (예: 빈폴)" />
+    <div class="mb-4">
+      <p class="mb-2 font-semibold">스타일 선택:</p>
+      <div class="flex gap-2">
+        <button class="style-btn border px-4 py-2 rounded" data-style="감각적">감각적</button>
+        <button class="style-btn border px-4 py-2 rounded" data-style="창의적">창의적</button>
+        <button class="style-btn border px-4 py-2 rounded" data-style="직관적">직관적</button>
+      </div>
+    </div>
+
+    <button id="generate" class="bg-black text-white px-4 py-2 rounded">작명 요청</button>
+    <div id="result" class="mt-4 text-lg"></div>
   </div>
 
-  <div class="flex gap-3 mt-6 justify-center">
-    <button class="style-btn px-4 py-2 border border-black font-serif" data-style="직관적">직관적</button>
-    <button class="style-btn px-4 py-2 border border-black font-serif" data-style="감각적">감각적</button>
-    <button class="style-btn px-4 py-2 border border-black font-serif" data-style="창의적">창의적</button>
-  </div>
-
-  <div class="text-center">
-    <button id="generate" class="mt-6 px-8 py-3 bg-black text-white font-serif tracking-wide text-sm hover:bg-gray-800 transition">
-      시크하게 만들어보기
-    </button>
-  </div>
-
-  <div id="result" class="mt-10 text-center text-xl font-serif"></div>
-
+  <script src="script.js"></script>
 </body>
 </html>
