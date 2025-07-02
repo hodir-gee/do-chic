@@ -24,6 +24,11 @@ generateButton.addEventListener('click', async () => {
     return;
   }
 
+  // 👉 로딩 중 문구 출력
+  resultBox.innerHTML = '<p class="text-gray-500 animate-pulse">두식이 츄르 먹는 중...</p>';
+  resultBox.classList.remove("opacity-0");
+  resultBox.classList.add("opacity-100");
+
   const response = await fetch('/api/gpt', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -31,10 +36,9 @@ generateButton.addEventListener('click', async () => {
   });
 
   const data = await response.json();
+
   if (data.result) {
     resultBox.innerHTML = `<p class="whitespace-pre-line">${data.result}</p>`;
-    resultBox.classList.remove("opacity-0");
-    resultBox.classList.add("opacity-100");
   } else {
     resultBox.innerHTML = '<p class="text-red-500">결과를 받아오는 데 실패했어요.</p>';
   }
