@@ -28,29 +28,29 @@ generateButton.addEventListener('click', async () => {
     return;
   }
 
-  // ✅ 로딩 메시지 출력
-  resultBox.innerHTML = '<p class="text-gray-500 animate-pulse">두식이 츄르 먹는 중...</p>';
-  resultBox.classList.remove("opacity-0");
-  resultBox.classList.add("opacity-100");
+// 로딩 메시지 출력
+resultBox.innerHTML = '<p class="text-gray-500 animate-pulse">두식이 츄르 먹는 중...</p>';
+resultBox.classList.remove("opacity-0");
+resultBox.classList.add("opacity-100");
 
-  // ✅ 로딩 메시지가 화면에 렌더링될 시간을 확보
-  await new Promise(resolve => setTimeout(resolve, 100));
+// ✅ 렌더링을 보장하는 방식으로 한 프레임 기다림
+await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
-  try {
-    const response = await fetch('/api/gpt', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ keywords, season, place, style: selectedStyle, brand, product })
-    });
+try {
+  const response = await fetch('/api/gpt', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ keywords, season, place, style: selectedStyle, brand, product })
+  });
 
-    const data = await response.json();
+  const data = await response.json();
 
-    if (data.result) {
-      resultBox.innerHTML = `<p class="whitespace-pre-line">${data.result}</p>`;
-    } else {
-      resultBox.innerHTML = '<p class="text-red-500">결과를 받아오는 데 실패했어요.</p>';
-    }
-  } catch (error) {
-    resultBox.innerHTML = '<p class="text-red-500">오류가 발생했어요. 다시 시도해주세요.</p>';
+  if (data.result) {
+    resultBox.innerHTML = `<p class="whitespace-pre-line">${data.result}</p>`;
+  } else {
+    resultBox.innerHTML = '<p class="text-red-500">결과를 받아오는 데 실패했어요.</p>';
   }
+} catch (error) {
+  resultBox.innerHTML = '<p class="text-red-500">오류가 발생했어요. 다시 시도해주세요.</p>';
+}
 });
