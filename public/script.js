@@ -1,6 +1,5 @@
 console.log("스크립트가 제대로 실행됨");
 
-
 const styleButtons = document.querySelectorAll('.style-btn');
 let selectedStyle = null;
 
@@ -18,31 +17,40 @@ const resultBox = document.getElementById('result');
 generateButton.addEventListener('click', async () => {
   const keywords = document.getElementById('keywords').value.trim();
   const season = document.getElementById('season').value.trim();
-  const place = document.getElementById('place').value.trim();
+  const place = document.getElementById('place')?.value.trim() || '';
   const brand = document.getElementById('brand')?.value.trim() || '';
   const product = document.getElementById('product')?.value.trim() || '';
 
   if (!keywords || !season || !place || !selectedStyle) {
     resultBox.innerHTML = '<p class="text-red-500">모든 항목을 입력하고 스타일을 선택해주세요.</p>';
+    resultBox.classList.remove("opacity-0");
+    resultBox.classList.add("opacity-100");
     return;
   }
 
-  // 👉 로딩 중 문구 출력
+  // ✅ 로딩 메시지 출력
   resultBox.innerHTML = '<p class="text-gray-500 animate-pulse">두식이 츄르 먹는 중...</p>';
   resultBox.classList.remove("opacity-0");
   resultBox.classList.add("opacity-100");
 
-  const response = await fetch('/api/gpt', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ keywords, season, place, style: selectedStyle, brand, product })
-  });
+  // ✅ 로딩 메시지가 화면에 렌더링될 시간을 확보
+  await new Promise(resolve => setTimeout(resolve, 100));
 
-  const data = await response.json();
+  try {
+    const response = await fetch('/api/gpt', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ keywords, season, place, style: selectedStyle, brand, product })
+    });
 
-  if (data.result) {
-    resultBox.innerHTML = `<p class="whitespace-pre-line">${data.result}</p>`;
-  } else {
-    resultBox.innerHTML = '<p class="text-red-500">결과를 받아오는 데 실패했어요.</p>';
+    const data = await response.json();
+
+    if (data.result) {
+      resultBox.innerHTML = `<p class="whitespace-pre-line">${data.result}</p>`;
+    } else {
+      resultBox.innerHTML = '<p class="text-red-500">결과를 받아오는 데 실패했어요.</p>';
+    }
+  } catch (error) {
+    resultBox.innerHTML = '<p class="text-red-500">오류가 발생했어요. 다시 시도해주세요.</p>';
   }
 });
