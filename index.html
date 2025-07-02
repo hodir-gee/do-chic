@@ -9,24 +9,34 @@
 <body class="bg-white text-black flex flex-col items-center justify-center min-h-screen p-4">
 
   <div class="w-full max-w-md text-center">
+    <!-- 타이틀 + 이미지 -->
     <div class="flex justify-center items-center mb-2">
       <span class="text-4xl font-bold mr-2">두식작명소</span>
       <img src="dusik.png" alt="두식이" class="h-12 align-middle" />
     </div>
-    <p class="text-sm mb-6 text-gray-600">오픈이 코앞인데 기획전 이름이 고민인 당신을 위한 두식이의 시크한 솔루션</p>
 
+    <!-- 부제 -->
+    <p class="text-sm mb-6 text-gray-600">
+      오픈이 코앞인데 기획전 이름이 고민인 당신을 위한 두식이의 시크한 솔루션
+    </p>
+
+    <!-- 브랜드 -->
     <label class="block mb-2 font-semibold text-left">브랜드</label>
     <input id="place" type="text" placeholder="빈폴" class="w-full border px-3 py-2 mb-4 rounded" />
 
+    <!-- 제품 -->
     <label class="block mb-2 font-semibold text-left">제품</label>
     <input id="product" type="text" placeholder="예: 가방, 스니커즈" class="w-full border px-3 py-2 mb-4 rounded" />
 
+    <!-- 카테고리 -->
     <label class="block mb-2 font-semibold text-left">카테고리</label>
     <input id="keywords" type="text" placeholder="신상품, 비치웨어" class="w-full border px-3 py-2 mb-4 rounded" />
 
+    <!-- 시즌 -->
     <label class="block mb-2 font-semibold text-left">시즌</label>
     <input id="season" type="text" placeholder="예: 여름" class="w-full border px-3 py-2 mb-6 rounded" />
 
+    <!-- 스타일 선택 -->
     <label class="block mb-2 font-semibold text-left">스타일</label>
     <div class="flex justify-between mb-6">
       <button class="style-btn border px-4 py-2 rounded" data-style="감각적">감각적</button>
@@ -34,14 +44,15 @@
       <button class="style-btn border px-4 py-2 rounded" data-style="직관적">직관적</button>
     </div>
 
-    <button id="generate" class="w-full bg-black text-white py-2 rounded">LET's DO CHIC</button>
+    <!-- 생성 버튼 -->
+    <button id="generate" class="w-full bg-black text-white py-2 rounded">
+      LET's DO CHIC
+    </button>
 
-   <div id="result" class="mt-6 text-center text-lg font-medium transition-opacity duration-700 opacity-0"></div>
-
+    <!-- 결과 출력 -->
+    <div id="result" class="mt-6 text-center text-lg font-medium opacity-0 transition-opacity duration-700"></div>
   </div>
 
   <script src="script.js"></script>
 </body>
 </html>
-
-
