@@ -31,7 +31,11 @@ generateButton.addEventListener('click', async () => {
   });
 
   const data = await response.json();
-  resultBox.innerHTML = data.result
-    ? `<p class="whitespace-pre-line">${data.result}</p>`
-    : '<p class="text-red-500">결과를 받아오는 데 실패했어요.</p>';
+  if (data.result) {
+    resultBox.innerHTML = `<p class="whitespace-pre-line">${data.result}</p>`;
+    resultBox.classList.remove("opacity-0");
+    resultBox.classList.add("opacity-100");
+  } else {
+    resultBox.innerHTML = '<p class="text-red-500">결과를 받아오는 데 실패했어요.</p>';
+  }
 });
