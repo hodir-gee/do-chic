@@ -1,4 +1,4 @@
-console.log("스크립트가 제대로 실행됨");
+
 
 const styleButtons = document.querySelectorAll('.style-btn');
 let selectedStyle = null;
