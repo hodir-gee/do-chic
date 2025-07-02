@@ -3,15 +3,17 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const { place, product, keywords, season, style } = req.body;
-  const prompt = generatePrompt({ place, product, keywords, season, style });
+  // ✔️ place → brand 로 변경
+  const { brand, product, keywords, season, style } = req.body;
+
+  const prompt = generatePrompt({ brand, product, keywords, season, style });
 
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}` // ← 수정됨: 변수명 정확히 맞췄는지 확인
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
         model: 'gpt-4',
@@ -22,17 +24,17 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // ✅ 디버깅 로그: 응답을 그대로 브라우저로 전달해주기 (임시)
+    // ✔️ 디버깅을 위해 응답 그대로 반환 (조건적)
     if (!data.choices || !data.choices[0]?.message?.content) {
       return res.status(500).json({
         error: 'OpenAI 응답 형식 오류',
-        debug: data
+        debug: data  // 👉 이걸로 정확한 응답 내용 확인 가능
       });
     }
 
     const result = data.choices[0].message.content;
-
     return res.status(200).json({ result });
+
   } catch (error) {
     return res.status(500).json({
       error: error.message,
@@ -41,12 +43,13 @@ export default async function handler(req, res) {
   }
 }
 
-function generatePrompt({ place, product, keywords, season, style }) {
+// ✔️ prompt 생성 함수 - brand 사용으로 통일
+function generatePrompt({ brand, product, keywords, season, style }) {
   if (style === '직관적') {
     return `너는 패션 기획전 이름을 제안하는 작명가야.
 
 사용자가 입력한 조건은 다음과 같아:
-- 브랜드: ${place}
+- 브랜드: ${brand}
 - 제품: ${product}
 - 카테고리 키워드: ${keywords}
 - 시즌: ${season}
@@ -63,7 +66,7 @@ function generatePrompt({ place, product, keywords, season, style }) {
     return `너는 패션 기획전 이름을 제안하는 작명가야.
 
 사용자가 입력한 조건은 다음과 같아:
-- 브랜드: ${place}
+- 브랜드: ${brand}
 - 제품: ${product}
 - 카테고리 키워드: ${keywords}
 - 시즌: ${season}
@@ -76,10 +79,11 @@ function generatePrompt({ place, product, keywords, season, style }) {
 - 각 이름에 대한 간단한 의미와 설명도 함께 제공해.`;
   }
 
+  // 기본은 창의적
   return `너는 예술성과 감성을 겸비한 패션 기획전 작명가야.
 
 사용자가 입력한 조건은 다음과 같아:
-- 브랜드: ${place}
+- 브랜드: ${brand}
 - 제품: ${product}
 - 카테고리 키워드: ${keywords}
 - 시즌: ${season}
