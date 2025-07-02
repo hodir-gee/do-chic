@@ -4,7 +4,6 @@ export default async function handler(req, res) {
   }
 
   const { place, product, keywords, season, style } = req.body;
-
   const prompt = generatePrompt({ place, product, keywords, season, style });
 
   try {
@@ -12,7 +11,7 @@ export default async function handler(req, res) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}` // ← 수정됨: 변수명 정확히 맞췄는지 확인
       },
       body: JSON.stringify({
         model: 'gpt-4',
@@ -22,11 +21,23 @@ export default async function handler(req, res) {
     });
 
     const data = await response.json();
-    const result = data.choices?.[0]?.message?.content;
+
+    // ✅ 디버깅 로그: 응답을 그대로 브라우저로 전달해주기 (임시)
+    if (!data.choices || !data.choices[0]?.message?.content) {
+      return res.status(500).json({
+        error: 'OpenAI 응답 형식 오류',
+        debug: data
+      });
+    }
+
+    const result = data.choices[0].message.content;
 
     return res.status(200).json({ result });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(500).json({
+      error: error.message,
+      hint: 'OpenAI fetch 실패 또는 네트워크 오류'
+    });
   }
 }
 
