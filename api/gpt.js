@@ -1,3 +1,4 @@
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
@@ -42,7 +43,7 @@ export default async function handler(req, res) {
         model: 'gpt-4o',
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.9,
-        n: 1  // ⚠️ 여기서 응답을 1개만 받아도, prompt 내부에서 3개 생성 요청함
+        n: 1
       })
     });
 
