@@ -1,41 +1,34 @@
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  const { brand, product, season, category, style } = req.body;
+  const { brand, product, keywords, season, style } = req.body;
 
-  const prompt = `
-너는 뛰어난 카피라이터다. 아래 조건에 맞춰 마케팅 작명 결과를 정확히 3가지 생성해줘.
+  const messages = [
+    {
+      role: 'system',
+      content: `너는 패션 마케터의 작명을 도와주는 GPT 어시스턴트야.
+작명은 아래와 같은 포맷을 따라야 해:
 
-브랜드: ${brand}
+헤드 카피: (16바이트 이내)
+서브 카피: (32바이트 이내)
+
+한 줄 띄운 뒤,
+
+설명: (왜 이런 작명이 나왔는지 설명)
+
+모든 카피는 자연어 문장이어야 하고, 줄바꿈 없이 한 줄로 구성돼야 해.`
+    },
+    {
+      role: 'user',
+      content: `브랜드: ${brand}
 주제: ${product}
 시즌: ${season}
-카테고리: ${category}
-스타일: ${style} 스타일
-
-각 결과는 다음 형식으로 출력해줘:
-
----
-[헤드카피]
-[서브카피]
-
-[설명]
----
-[헤드카피]
-[서브카피]
-
-[설명]
----
-[헤드카피]
-[서브카피]
-
-[설명]
----
-
-※ 반드시 '---' 세 줄 구분자로 결과를 나눠줘. 총 3세트만 제공하고, 다른 설명은 하지 마.
-`.trim();
+카테고리: ${keywords}
+스타일: ${style} 느낌으로 작명해줘.`
+    }
+  ];
 
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -46,15 +39,15 @@ export default async function handler(req, res) {
       },
       body: JSON.stringify({
         model: 'gpt-4o',
-        messages: [{ role: 'user', content: prompt }],
-        temperature: 0.9,
-        n: 1
+        messages,
+        temperature: 0.7
       })
     });
 
     const data = await response.json();
-    return res.status(200).json(data);
+    const result = data.choices?.[0]?.message?.content || '결과가 없습니다.';
+    res.status(200).json({ result });
   } catch (error) {
-    return res.status(500).json({ error: 'Failed to generate names.' });
+    res.status(500).json({ error: 'OpenAI API 호출 실패' });
   }
 }
