@@ -1,4 +1,3 @@
-
 const styleButtons = document.querySelectorAll('.style-btn');
 let selectedStyle = null;
 
@@ -14,56 +13,49 @@ const generateButton = document.getElementById('generate');
 const resultBox = document.getElementById('result');
 
 generateButton.addEventListener('click', async () => {
-  const brand = document.getElementById('brand').value.trim();
+  const brand = document.getElementById('place').value.trim();
   const product = document.getElementById('product').value.trim();
+  const keywords = document.getElementById('keywords').value.trim();
   const season = document.getElementById('season').value.trim();
-  const category = document.getElementById('category').value.trim();
 
-  if (!brand || !product || !season || !category || !selectedStyle) {
+  if (!brand || !product || !keywords || !season || !selectedStyle) {
     resultBox.innerHTML = '<p class="text-red-500 text-center">모든 항목을 입력하고 스타일을 선택해주세요.</p>';
+    resultBox.classList.remove("opacity-0");
+    resultBox.classList.add("opacity-100");
     return;
   }
 
-  resultBox.innerHTML = '<p class="text-center mt-6">🐱 두식이 츄르 먹는 중...</p>';
+  resultBox.innerHTML = '<p class="text-gray-500 animate-pulse text-center">🐱 두식이 츄르 먹는 중...</p>';
+  resultBox.classList.remove("opacity-0");
+  resultBox.classList.add("opacity-100");
+
+  await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
   try {
-    const response = await fetch('/api/gpt.js', {
+    const response = await fetch('/api/gpt', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        brand,
-        product,
-        season,
-        category,
-        style: selectedStyle
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ brand, product, keywords, season, style: selectedStyle })
     });
 
     const data = await response.json();
-    const content = data.choices[0].message.content.trim();
-    console.log("GPT raw content:\n", content);
 
-    const parts = content.split('---').map(part => part.trim()).filter(Boolean);
-    console.log("Split parts:", parts);
+    if (data.result) {
+      const formatted = data.result
+        .split('\n')
+        .map(line => {
+          if (line.startsWith('헤드 카피:')) return `<p class="font-bold mb-1">${line}</p>`;
+          if (line.startsWith('서브 카피:')) return `<p class="mb-3">${line}</p>`;
+          if (line.startsWith('설명:')) return `<p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">${line}</p>`;
+          return `<p class="text-sm text-gray-700 whitespace-pre-line">${line}</p>`;
+        })
+        .join('');
 
-    const formatted = parts.map(block => {
-      const lines = block.split('\n').filter(Boolean);
-      if (lines.length < 3) return '';
-      const [head, sub, ...desc] = lines;
-      return `
-        <div class="mb-6 text-left p-4 border rounded-xl shadow bg-white">
-          <p class="font-bold text-lg mb-1">${head}</p>
-          <p class="text-base mb-2">${sub}</p>
-          <p class="text-sm text-gray-600 whitespace-pre-line">${desc.join('\n')}</p>
-        </div>
-      `;
-    }).join('');
-
-    resultBox.innerHTML = formatted || '<p class="text-center">결과를 불러오지 못했습니다.</p>';
+      resultBox.innerHTML = `<div class="text-left">${formatted}</div>`;
+    } else {
+      resultBox.innerHTML = '<p class="text-red-500 text-center">결과를 받아오는 데 실패했어요.</p>';
+    }
   } catch (error) {
-    console.error(error);
-    resultBox.innerHTML = '<p class="text-red-500 text-center">문제가 발생했습니다. 다시 시도해주세요.</p>';
+    resultBox.innerHTML = '<p class="text-red-500 text-center">오류가 발생했어요. 다시 시도해주세요.</p>';
   }
 });
