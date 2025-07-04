@@ -41,7 +41,8 @@ generateButton.addEventListener('click', async () => {
     const data = await response.json();
 
     if (data.result) {
-      console.log("GPT 응답 원문:", data.result); // 디버깅용 로그
+      // ✅ 여기가 핵심: 응답 내용 콘솔에 출력
+      console.log("GPT 응답 원문:", data.result);
 
       const sections = data.result.split('---').map(s => s.trim()).filter(Boolean);
 
