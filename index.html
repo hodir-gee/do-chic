@@ -1,53 +1,36 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>DO-CHIC NAMING LAB</title>
-  <link rel="icon" type="image/png" href="dusic.png" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-white text-black flex flex-col items-center justify-center min-h-screen p-4">
 
   <div class="w-full max-w-md text-center">
-    <div class="flex justify-center items-center mb-6">
-      <span class="text-3xl font-bold mr-2">'DO-CHIC' NAMING LAB</span>
-      <img src="/dusic.png" alt="두식이" class="h-12 align-middle" />
+    <h1 class="text-2xl font-bold mb-2">'DO-CHIC' NAMING LAB</h1>
+    <p class="text-sm mb-6">오픈이 코앞인데 기획전 이름이 고민인 당신을 위한 두식이의 시크한 솔루션</p>
+
+    <div class="space-y-4 mb-6">
+      <input id="brand" type="text" placeholder="브랜드" class="w-full border p-2 rounded" />
+      <input id="product" type="text" placeholder="주제 (예: 30% 할인)" class="w-full border p-2 rounded" />
+      <input id="season" type="text" placeholder="시즌 (예: 여름)" class="w-full border p-2 rounded" />
+      <input id="category" type="text" placeholder="카테고리 (예: 스포츠)" class="w-full border p-2 rounded" />
     </div>
 
-    <p class="text-sm mb-6 text-gray-600">
-      오픈이 코앞인데 기획전 이름이 고민인 당신을 위한 두식이의 시크한 솔루션
-    </p>
-
-    <label class="block mb-2 font-semibold text-left">브랜드</label>
-    <input id="place" type="text" placeholder="빈폴, 르메르, 매종키츠네..." class="w-full border px-3 py-2 mb-4 rounded text-sm placeholder:text-xs" />
-
-    <label class="block mb-2 font-semibold text-left">주제</label>
-    <input id="product" type="text" placeholder="시즌오프, 통합전, 할인/혜택, 아울렛, 협업, 프로모션/이벤트, 론칭, 쇼핑위크..." class="w-full border px-3 py-2 mb-4 rounded text-sm placeholder:text-xs" />
-
-    <label class="block mb-2 font-semibold text-left">시즌</label>
-    <input id="season" type="text" placeholder="봄, 여름, 겨울, 가을..." class="w-full border px-3 py-2 mb-4 rounded text-sm placeholder:text-xs" />
-
-    <label class="block mb-2 font-semibold text-left">카테고리</label>
-    <input id="keywords" type="text" placeholder="라이프, 패션잡화, 스포츠,..." class="w-full border px-3 py-2 mb-6 rounded text-sm placeholder:text-xs" />
-
-    <label class="block mb-2 font-semibold text-left">스타일</label>
-    <div class="flex justify-between mb-6">
-      <button class="style-btn border px-4 py-2 rounded text-sm" data-style="감각적">감각적</button>
-      <button class="style-btn border px-4 py-2 rounded text-sm" data-style="창의적">창의적</button>
-      <button class="style-btn border px-4 py-2 rounded text-sm" data-style="직관적">직관적</button>
+    <div class="flex justify-center space-x-2 mb-6">
+      <button class="style-btn border px-3 py-1 rounded" data-style="감각적">감각적</button>
+      <button class="style-btn border px-3 py-1 rounded" data-style="창의적">창의적</button>
+      <button class="style-btn border px-3 py-1 rounded" data-style="직관적">직관적</button>
     </div>
 
-    <button id="generate" class="w-full bg-black text-white py-2 rounded">
-      LET's DO CHIC
-    </button>
+    <button id="generate" class="w-full bg-black text-white py-2 rounded">LET'S DO CHIC</button>
 
-    <div id="result" class="mt-6 text-left text-base font-medium opacity-0 transition-opacity duration-700 space-y-6"></div>
-  </div>
+    <div id="result" class="mt-8 text-left"></div>
 
-  <div class="mt-10 text-center text-xs text-gray-400">
-    <p>💡 GPT-4o 버전입니다. 두식이도 신났어요! 🐾</p>
-    <p class="mt-1">작명 결과가 보인 후엔 새로고침(F5 또는 ⌘+R) 후 새 의뢰를 해주세요.</p>
+    <p class="text-xs text-gray-500 mt-8">💡 GPT-4o 버전입니다. 두식이도 신나요! 🐾<br>작명 결과가 보인 후엔 새로고침(F5 또는 ⌘+R) 후 새 의뢰를 해주세요.</p>
   </div>
 
   <script src="script.js"></script>
