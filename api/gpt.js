@@ -1,3 +1,4 @@
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method Not Allowed' });
@@ -9,14 +10,14 @@ export default async function handler(req, res) {
     {
       role: 'system',
       content: `너는 패션 마케터의 작명을 도와주는 GPT 어시스턴트야.
-작명은 아래와 같은 포맷을 따라야 해:
+각 작명은 아래 포맷을 따르고, 정확히 3개 세트를 생성해야 해:
 
+---
 헤드 카피: (16바이트 이내)
 서브 카피: (32바이트 이내)
 
-한 줄 띄운 뒤,
-
 설명: (왜 이런 작명이 나왔는지 설명)
+---
 
 모든 카피는 자연어 문장이어야 하고, 줄바꿈 없이 한 줄로 구성돼야 해.`
     },
