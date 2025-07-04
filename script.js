@@ -19,16 +19,14 @@ generateButton.addEventListener('click', async () => {
   const season = document.getElementById('season').value.trim();
 
   if (!brand || !product || !keywords || !season || !selectedStyle) {
+    resultBox.className = "mt-6 text-center text-lg font-medium opacity-100 transition-opacity duration-700";
     resultBox.innerHTML = '<p class="text-red-500">모든 항목을 입력하고 스타일을 선택해주세요.</p>';
-    resultBox.classList.remove("opacity-0");
-    resultBox.classList.add("opacity-100", "text-center");
     return;
   }
 
-  // ✅ 로딩 메시지 중앙정렬
-  resultBox.innerHTML = '<p class="text-gray-500 text-center">😺 두식이 츄르 먹는 중...</p>';
-  resultBox.classList.remove("opacity-0", "text-left");
-  resultBox.classList.add("opacity-100", "text-center");
+  // ✅ 중앙정렬로 로딩 메시지 표시
+  resultBox.className = "mt-6 text-center text-lg font-medium opacity-100 transition-opacity duration-700";
+  resultBox.innerHTML = '<p class="text-gray-500">😺 두식이 츄르 먹는 중...</p>';
 
   await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
@@ -42,10 +40,8 @@ generateButton.addEventListener('click', async () => {
     const data = await response.json();
 
     if (data.result) {
-      // ✅ 결과는 좌정렬 + 스타일 반영
-      resultBox.classList.remove("text-center");
-      resultBox.classList.add("text-left");
-
+      // ✅ 결과는 좌정렬 + 서브텍스트 스타일 적용
+      resultBox.className = "mt-6 text-left text-lg font-medium opacity-100 transition-opacity duration-700";
       resultBox.innerHTML = data.result;
     } else {
       resultBox.innerHTML = '<p class="text-red-500">결과를 받아오는 데 실패했어요.</p>';
