@@ -13,7 +13,7 @@ const generateButton = document.getElementById('generate');
 const resultBox = document.getElementById('result');
 
 generateButton.addEventListener('click', async () => {
-  const brand = document.getElementById('place').value.trim(); // ✅ 수정됨
+  const brand = document.getElementById('place').value.trim();
   const product = document.getElementById('product').value.trim();
   const keywords = document.getElementById('keywords').value.trim();
   const season = document.getElementById('season').value.trim();
@@ -25,7 +25,6 @@ generateButton.addEventListener('click', async () => {
     return;
   }
 
-  // 중앙 정렬된 로딩 메시지
   resultBox.innerHTML = '<p class="text-gray-500 animate-pulse text-center">🐱 두식이 츄르 먹는 중...</p>';
   resultBox.classList.remove("opacity-0");
   resultBox.classList.add("opacity-100");
