@@ -48,8 +48,18 @@ generateButton.addEventListener('click', async () => {
 
       const formatted = sections.map(section => {
         const lines = section.split('\n').filter(Boolean);
-        const head = lines.find(line => line.startsWith('헤드 카피:')) || '';
-        const sub = lines.find(line => line.startsWith('서브 카피:')) || '';
+
+        // 헤드 카피와 서브 카피 분리 처리
+        let head = lines.find(line => line.startsWith('헤드 카피:')) || '';
+        let sub = lines.find(line => line.startsWith('서브 카피:')) || '';
+
+        // 하나의 줄에 같이 있는 경우: "헤드 카피: xxx / 서브 카피: yyy"
+        if (head.includes('/ 서브 카피:')) {
+          const parts = head.split('/ 서브 카피:');
+          head = parts[0].trim();
+          sub = '서브 카피:' + parts[1].trim();
+        }
+
         const desc = lines.find(line => line.startsWith('설명:')) || '';
 
         return `
