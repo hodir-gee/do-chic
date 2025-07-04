@@ -13,20 +13,22 @@ const generateButton = document.getElementById('generate');
 const resultBox = document.getElementById('result');
 
 generateButton.addEventListener('click', async () => {
-  const brand = document.getElementById('place').value.trim();
+  const brand = document.getElementById('brand').value.trim();
   const product = document.getElementById('product').value.trim();
   const keywords = document.getElementById('keywords').value.trim();
   const season = document.getElementById('season').value.trim();
 
   if (!brand || !product || !keywords || !season || !selectedStyle) {
-    resultBox.className = "mt-6 text-center text-lg font-medium opacity-100 transition-opacity duration-700";
-    resultBox.innerHTML = '<p class="text-red-500">모든 항목을 입력하고 스타일을 선택해주세요.</p>';
+    resultBox.innerHTML = '<p class="text-red-500 text-center">모든 항목을 입력하고 스타일을 선택해주세요.</p>';
+    resultBox.classList.remove("opacity-0");
+    resultBox.classList.add("opacity-100");
     return;
   }
 
-  // ✅ 중앙정렬로 로딩 메시지 표시
-  resultBox.className = "mt-6 text-center text-lg font-medium opacity-100 transition-opacity duration-700";
-  resultBox.innerHTML = '<p class="text-gray-500">😺 두식이 츄르 먹는 중...</p>';
+  // ✅ 중앙 정렬된 로딩 메시지
+  resultBox.innerHTML = '<p class="text-gray-500 animate-pulse text-center">🐱 두식이 츄르 먹는 중...</p>';
+  resultBox.classList.remove("opacity-0");
+  resultBox.classList.add("opacity-100");
 
   await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
@@ -40,13 +42,22 @@ generateButton.addEventListener('click', async () => {
     const data = await response.json();
 
     if (data.result) {
-      // ✅ 결과는 좌정렬 + 서브텍스트 스타일 적용
-      resultBox.className = "mt-6 text-left text-lg font-medium opacity-100 transition-opacity duration-700";
-      resultBox.innerHTML = data.result;
+      const formatted = data.result
+        .split('\n')
+        .map(line => {
+          if (line.startsWith('헤드 카피:')) return `<p class="font-bold mb-1">${line}</p>`;
+          if (line.startsWith('서브 카피:')) return `<p class="mb-3">${line}</p>`;
+          if (line.startsWith('설명:')) return `<p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">${line}</p>`;
+          return `<p class="text-sm text-gray-700 whitespace-pre-line">${line}</p>`;
+        })
+        .join('');
+
+      // ✅ 좌측 정렬된 결과
+      resultBox.innerHTML = `<div class="text-left">${formatted}</div>`;
     } else {
-      resultBox.innerHTML = '<p class="text-red-500">결과를 받아오는 데 실패했어요.</p>';
+      resultBox.innerHTML = '<p class="text-red-500 text-center">결과를 받아오는 데 실패했어요.</p>';
     }
   } catch (error) {
-    resultBox.innerHTML = '<p class="text-red-500">오류가 발생했어요. 다시 시도해주세요.</p>';
+    resultBox.innerHTML = '<p class="text-red-500 text-center">오류가 발생했어요. 다시 시도해주세요.</p>';
   }
 });
