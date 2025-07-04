@@ -1,3 +1,4 @@
+
 const styleButtons = document.querySelectorAll('.style-btn');
 let selectedStyle = null;
 
@@ -41,17 +42,24 @@ generateButton.addEventListener('click', async () => {
     const data = await response.json();
 
     if (data.result) {
-      const formatted = data.result
-        .split('\n')
-        .map(line => {
-          if (line.startsWith('헤드 카피:')) return `<p class="font-bold mb-1">${line}</p>`;
-          if (line.startsWith('서브 카피:')) return `<p class="mb-3">${line}</p>`;
-          if (line.startsWith('설명:')) return `<p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">${line}</p>`;
-          return `<p class="text-sm text-gray-700 whitespace-pre-line">${line}</p>`;
-        })
-        .join('');
+      const sections = data.result.split('---').map(s => s.trim()).filter(Boolean);
 
-      resultBox.innerHTML = `<div class="text-left">${formatted}</div>`;
+      const formatted = sections.map(section => {
+        const lines = section.split('\n').filter(Boolean);
+        const head = lines.find(line => line.startsWith('헤드 카피:')) || '';
+        const sub = lines.find(line => line.startsWith('서브 카피:')) || '';
+        const desc = lines.find(line => line.startsWith('설명:')) || '';
+
+        return `
+          <div class="border rounded-xl p-4 shadow bg-white">
+            <p class="font-bold mb-1">${head}</p>
+            <p class="mb-2">${sub}</p>
+            <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">${desc}</p>
+          </div>
+        `;
+      }).join('<hr class="my-4">');
+
+      resultBox.innerHTML = formatted;
     } else {
       resultBox.innerHTML = '<p class="text-red-500 text-center">결과를 받아오는 데 실패했어요.</p>';
     }
