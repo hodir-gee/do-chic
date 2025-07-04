@@ -13,49 +13,53 @@ const generateButton = document.getElementById('generate');
 const resultBox = document.getElementById('result');
 
 generateButton.addEventListener('click', async () => {
-  const brand = document.getElementById('place').value.trim();
+  const brand = document.getElementById('brand').value.trim();
   const product = document.getElementById('product').value.trim();
-  const keywords = document.getElementById('keywords').value.trim();
   const season = document.getElementById('season').value.trim();
+  const category = document.getElementById('category').value.trim();
 
-  if (!brand || !product || !keywords || !season || !selectedStyle) {
+  if (!brand || !product || !season || !category || !selectedStyle) {
     resultBox.innerHTML = '<p class="text-red-500 text-center">모든 항목을 입력하고 스타일을 선택해주세요.</p>';
-    resultBox.classList.remove("opacity-0");
-    resultBox.classList.add("opacity-100");
     return;
   }
 
-  resultBox.innerHTML = '<p class="text-gray-500 animate-pulse text-center">🐱 두식이 츄르 먹는 중...</p>';
-  resultBox.classList.remove("opacity-0");
-  resultBox.classList.add("opacity-100");
-
-  await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+  resultBox.innerHTML = '<p class="text-center mt-6">🐱 두식이 츄르 먹는 중...</p>';
 
   try {
-    const response = await fetch('/api/gpt', {
+    const response = await fetch('/api/gpt.js', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ brand, product, keywords, season, style: selectedStyle })
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        brand,
+        product,
+        season,
+        category,
+        style: selectedStyle
+      })
     });
 
     const data = await response.json();
+    const content = data.choices[0].message.content.trim();
 
-    if (data.result) {
-      const formatted = data.result
-        .split('\n')
-        .map(line => {
-          if (line.startsWith('헤드 카피:')) return `<p class="font-bold mb-1">${line}</p>`;
-          if (line.startsWith('서브 카피:')) return `<p class="mb-3">${line}</p>`;
-          if (line.startsWith('설명:')) return `<p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">${line}</p>`;
-          return `<p class="text-sm text-gray-700 whitespace-pre-line">${line}</p>`;
-        })
-        .join('');
+    // 결과 3세트를 구분해서 보여주기
+    const parts = content.split('---').map(part => part.trim()).filter(Boolean);
+    const formatted = parts.map(block => {
+      const lines = block.split('\n').filter(Boolean);
+      if (lines.length < 3) return '';
+      const [head, sub, ...desc] = lines;
+      return `
+        <div class="mb-6 text-left">
+          <p class="font-bold text-lg mb-1">${head}</p>
+          <p class="text-base mb-2">${sub}</p>
+          <p class="text-sm text-gray-600 whitespace-pre-line">${desc.join('\n')}</p>
+        </div>
+      `;
+    }).join('');
 
-      resultBox.innerHTML = `<div class="text-left">${formatted}</div>`;
-    } else {
-      resultBox.innerHTML = '<p class="text-red-500 text-center">결과를 받아오는 데 실패했어요.</p>';
-    }
+    resultBox.innerHTML = formatted || '<p class="text-center">결과를 불러오지 못했습니다.</p>';
   } catch (error) {
-    resultBox.innerHTML = '<p class="text-red-500 text-center">오류가 발생했어요. 다시 시도해주세요.</p>';
+    resultBox.innerHTML = '<p class="text-red-500 text-center">문제가 발생했습니다. 다시 시도해주세요.</p>';
   }
 });
