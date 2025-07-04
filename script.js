@@ -43,8 +43,11 @@ generateButton.addEventListener('click', async () => {
 
     const data = await response.json();
     const content = data.choices[0].message.content.trim();
+    console.log("GPT raw content:\n", content);
 
     const parts = content.split('---').map(part => part.trim()).filter(Boolean);
+    console.log("Split parts:", parts);
+
     const formatted = parts.map(block => {
       const lines = block.split('\n').filter(Boolean);
       if (lines.length < 3) return '';
@@ -60,6 +63,7 @@ generateButton.addEventListener('click', async () => {
 
     resultBox.innerHTML = formatted || '<p class="text-center">결과를 불러오지 못했습니다.</p>';
   } catch (error) {
+    console.error(error);
     resultBox.innerHTML = '<p class="text-red-500 text-center">문제가 발생했습니다. 다시 시도해주세요.</p>';
   }
 });
