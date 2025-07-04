@@ -3,19 +3,18 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DO-CHIC NAMING LAB</title>
+  <title>두식작명소</title>
   <link rel="icon" type="image/png" href="dusic.png" />
   <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-white text-black flex flex-col items-center justify-center min-h-screen p-4">
 
   <div class="w-full max-w-md text-center">
-<!-- 타이틀 + 이미지 -->
-<div class="flex justify-center items-center mb-6">
-  <span class="text-3xl font-bold mr-2 whitespace-nowrap">'DO-CHIC' NAMING LAB</span>
-  <img src="/dusic.png" alt="두식이" class="h-10 align-middle" />
-</div>
-
+    <!-- 타이틀 + 이미지 -->
+    <div class="flex justify-center items-center mb-6">
+      <span class="text-4xl font-bold mr-2">두식작명소</span>
+      <img src="/dusic.png" alt="두식이" class="h-12 align-middle" />
+    </div>
 
     <!-- 부제 -->
     <p class="text-sm mb-6 text-gray-600">
@@ -24,19 +23,19 @@
 
     <!-- 브랜드 -->
     <label class="block mb-2 font-semibold text-left">브랜드</label>
-    <input id="place" type="text" placeholder="빈폴" class="w-full border px-3 py-2 mb-4 rounded" />
+    <input id="place" type="text" placeholder="빈폴, 르메르, 매종키츠네..." class="w-full border px-3 py-2 mb-4 rounded" />
 
-    <!-- 제품 -->
-    <label class="block mb-2 font-semibold text-left">제품</label>
-    <input id="product" type="text" placeholder="예: 가방, 스니커즈" class="w-full border px-3 py-2 mb-4 rounded" />
-
-    <!-- 카테고리 -->
-    <label class="block mb-2 font-semibold text-left">카테고리</label>
-    <input id="keywords" type="text" placeholder="신상품, 비치웨어" class="w-full border px-3 py-2 mb-4 rounded" />
+    <!-- 주제 -->
+    <label class="block mb-2 font-semibold text-left">주제</label>
+    <input id="product" type="text" placeholder="시즌오프, 통합전, 할인/혜택, 아울렛, 협업, 프로모션/이벤트, 론칭, 쇼핑위크..." class="w-full border px-3 py-2 mb-4 rounded" />
 
     <!-- 시즌 -->
     <label class="block mb-2 font-semibold text-left">시즌</label>
-    <input id="season" type="text" placeholder="예: 여름" class="w-full border px-3 py-2 mb-6 rounded" />
+    <input id="season" type="text" placeholder="봄, 여름, 겨울, 가을..." class="w-full border px-3 py-2 mb-4 rounded" />
+
+    <!-- 카테고리 -->
+    <label class="block mb-2 font-semibold text-left">카테고리</label>
+    <input id="keywords" type="text" placeholder="라이프, 패션잡화, 스포츠,..." class="w-full border px-3 py-2 mb-6 rounded" />
 
     <!-- 스타일 선택 -->
     <label class="block mb-2 font-semibold text-left">스타일</label>
@@ -55,18 +54,14 @@
     <div id="result" class="mt-6 text-center text-lg font-medium opacity-0 transition-opacity duration-700"></div>
   </div>
 
-  <!-- 안내 문구 -->
+  <!-- 안내 문구 추가 -->
   <div class="mt-10 text-center text-xs text-gray-400">
     <p>💡 GPT-4o 버전입니다. 두식이도 신났어요! 🐾</p>
-    <p class="mt-1">
-      작명 결과가 보인 후엔 <strong>새로고침(F5 또는 ⌘R)</strong> 후 새 의뢰를 해주세요.
-    </p>
+    <p class="mt-1">작명 결과가 보인 후엔 새로고침(F5 / ⌘ + R) 후 새 의뢰를 해주세요.</p>
   </div>
 
   <!-- ✅ 인라인 스크립트 -->
   <script>
-    console.log("✅ 인라인 script 실행됨");
-
     const styleButtons = document.querySelectorAll('.style-btn');
     let selectedStyle = null;
 
@@ -95,12 +90,10 @@
         return;
       }
 
-      // ✅ 로딩 메시지
       resultBox.innerHTML = '<p class="text-gray-500 animate-pulse">😻 두식이 츄르 먹는 중...</p>';
       resultBox.classList.remove("opacity-0");
       resultBox.classList.add("opacity-100");
 
-      // ✅ 렌더링 보장
       await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
 
       try {
@@ -122,6 +115,5 @@
       }
     });
   </script>
-
 </body>
 </html>
