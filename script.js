@@ -1,3 +1,4 @@
+
 const styleButtons = document.querySelectorAll('.style-btn');
 let selectedStyle = null;
 
@@ -43,14 +44,13 @@ generateButton.addEventListener('click', async () => {
     const data = await response.json();
     const content = data.choices[0].message.content.trim();
 
-    // 결과 3세트를 구분해서 보여주기
     const parts = content.split('---').map(part => part.trim()).filter(Boolean);
     const formatted = parts.map(block => {
       const lines = block.split('\n').filter(Boolean);
       if (lines.length < 3) return '';
       const [head, sub, ...desc] = lines;
       return `
-        <div class="mb-6 text-left">
+        <div class="mb-6 text-left p-4 border rounded-xl shadow bg-white">
           <p class="font-bold text-lg mb-1">${head}</p>
           <p class="text-base mb-2">${sub}</p>
           <p class="text-sm text-gray-600 whitespace-pre-line">${desc.join('\n')}</p>
