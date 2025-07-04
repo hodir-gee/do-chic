@@ -1,4 +1,3 @@
-
 const styleButtons = document.querySelectorAll('.style-btn');
 let selectedStyle = null;
 
@@ -42,6 +41,8 @@ generateButton.addEventListener('click', async () => {
     const data = await response.json();
 
     if (data.result) {
+      console.log("GPT 응답 원문:", data.result); // 디버깅용 로그
+
       const sections = data.result.split('---').map(s => s.trim()).filter(Boolean);
 
       const formatted = sections.map(section => {
