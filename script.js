@@ -42,7 +42,7 @@ generateButton.addEventListener('click', async () => {
     const data = await response.json();
 
     if (data.result) {
-      console.log("GPT 응답 원문:", data.result); // 디버깅용 로그
+      console.log("GPT 응답 원문:", data.result);
 
       const sections = data.result.split('---').map(s => s.trim()).filter(Boolean);
 
@@ -54,8 +54,8 @@ generateButton.addEventListener('click', async () => {
 
         return `
           <div class="border rounded-xl p-4 shadow bg-white">
-            <p class="font-bold mb-1">${head}</p>
-            <p class="mb-2">${sub}</p>
+            <p class="font-bold mb-1 whitespace-pre-line">${head}</p>
+            <p class="mb-2 whitespace-pre-line">${sub}</p>
             <p class="text-sm text-gray-700 leading-relaxed whitespace-pre-line">${desc}</p>
           </div>
         `;
@@ -66,6 +66,7 @@ generateButton.addEventListener('click', async () => {
       resultBox.innerHTML = '<p class="text-red-500 text-center">결과를 받아오는 데 실패했어요.</p>';
     }
   } catch (error) {
+    console.error("에러 발생:", error);
     resultBox.innerHTML = '<p class="text-red-500 text-center">오류가 발생했어요. 다시 시도해주세요.</p>';
   }
 });
