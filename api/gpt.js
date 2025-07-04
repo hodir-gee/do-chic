@@ -3,10 +3,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method Not Allowed' });
   }
 
-  // ✔️ place → brand 로 변경
-  const { brand, product, keywords, season, style } = req.body;
-
-  const prompt = generatePrompt({ brand, product, keywords, season, style });
+  const { place, product, keywords, season, style, brand } = req.body;
+  const prompt = generatePrompt({ place, product, keywords, season, style, brand });
 
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -16,7 +14,7 @@ export default async function handler(req, res) {
         Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'gpt-4',
+        model: 'gpt-4o',
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.8
       })
@@ -24,75 +22,39 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // ✔️ 디버깅을 위해 응답 그대로 반환 (조건적)
-    if (!data.choices || !data.choices[0]?.message?.content) {
-      return res.status(500).json({
-        error: 'OpenAI 응답 형식 오류',
-        debug: data  // 👉 이걸로 정확한 응답 내용 확인 가능
-      });
+    if (data.choices && data.choices[0].message.content) {
+      return res.status(200).json({ result: data.choices[0].message.content.trim() });
+    } else {
+      return res.status(500).json({ error: 'No result from OpenAI.' });
     }
-
-    const result = data.choices[0].message.content;
-    return res.status(200).json({ result });
-
   } catch (error) {
-    return res.status(500).json({
-      error: error.message,
-      hint: 'OpenAI fetch 실패 또는 네트워크 오류'
-    });
+    return res.status(500).json({ error: 'Request to OpenAI failed.' });
   }
 }
 
-// ✔️ prompt 생성 함수 - brand 사용으로 통일
-function generatePrompt({ brand, product, keywords, season, style }) {
-  if (style === '직관적') {
-    return `너는 패션 기획전 이름을 제안하는 작명가야.
+function generatePrompt({ place, product, keywords, season, style, brand }) {
+  return `
+당신은 창의적인 패션 마케터를 위한 기획전 작명 도우미입니다.
+아래 정보를 바탕으로 기획전 이름 후보 3가지를 제안해주세요.
 
-사용자가 입력한 조건은 다음과 같아:
 - 브랜드: ${brand}
-- 제품: ${product}
-- 카테고리 키워드: ${keywords}
+- 주제: ${place}
 - 시즌: ${season}
-- 작명 스타일: 직관적
-
-요청:
-- 이름은 직관적이고 실용적인 방향으로 지어줘.
-- 사용자들이 한눈에 어떤 기획전인지 알 수 있도록 명확하게 표현해.
-- 1~2단어의 한글 또는 영어 이름을 3개 제안해줘.
-- 각 이름마다 짧은 설명을 붙여줘.`;
-  }
-
-  if (style === '감각적') {
-    return `너는 패션 기획전 이름을 제안하는 작명가야.
-
-사용자가 입력한 조건은 다음과 같아:
-- 브랜드: ${brand}
+- 카테고리: ${keywords}
 - 제품: ${product}
-- 카테고리 키워드: ${keywords}
-- 시즌: ${season}
-- 작명 스타일: 감각적
+- 스타일: ${style}
 
-요청:
-- 이름은 감각적이고 트렌디한 인상을 주되, 너무 낯설지는 않게 해줘.
-- 젊은 타겟에게 어필할 수 있는 세련된 단어를 사용해.
-- 한글/영문 혼용 가능, 1~2단어, 3개 제안
-- 각 이름에 대한 간단한 의미와 설명도 함께 제공해.`;
-  }
+각 작명은 아래와 같은 형식으로 구성되어야 합니다:
 
-  // 기본은 창의적
-  return `너는 예술성과 감성을 겸비한 패션 기획전 작명가야.
+1. 헤드 카피: (최대 16바이트, 한 줄 제목)
+   서브 카피: (최대 32바이트, 부제/혜택/기간 등 보조 문구)
 
-사용자가 입력한 조건은 다음과 같아:
-- 브랜드: ${brand}
-- 제품: ${product}
-- 카테고리 키워드: ${keywords}
-- 시즌: ${season}
-- 작명 스타일: 창의적
+   설명: 작명 배경과 브랜드/주제/시즌/카테고리를 바탕으로 한 맥락 설명
 
-요청:
-- 이름은 상징적이고 창의적인 방향으로 제안해줘.
-- 은유나 시적인 언어, 감각적인 조합을 자유롭게 활용해도 좋아.
-- 다소 추상적이어도 매력적인 이름이면 OK.
-- 영어, 한글 혼용 가능. 1~2단어, 총 3개 제안.
-- 각 이름에는 그 의미를 짧고 시적으로 해석해서 설명해줘.`;
+💡주의사항:
+- 반드시 위의 출력 형식을 따르세요.
+- 헤드카피와 서브카피는 따옴표 없이 출력해주세요.
+- 숫자나 시각적 강조어도 자연스럽게 활용해주세요.
+- 브랜드 톤앤매너를 고려해 매력적이고 직관적으로 작명하세요.
+`.trim();
 }
