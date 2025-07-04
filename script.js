@@ -41,7 +41,7 @@ generateButton.addEventListener('click', async () => {
     const data = await response.json();
 
     if (data.result) {
-      // ✅ 여기가 핵심: 응답 내용 콘솔에 출력
+      // ✅ GPT 응답 원문 확인용 콘솔 로그
       console.log("GPT 응답 원문:", data.result);
 
       const sections = data.result.split('---').map(s => s.trim()).filter(Boolean);
@@ -66,6 +66,7 @@ generateButton.addEventListener('click', async () => {
       resultBox.innerHTML = '<p class="text-red-500 text-center">결과를 받아오는 데 실패했어요.</p>';
     }
   } catch (error) {
+    console.error("에러 발생:", error); // ✅ 여기에 추가됨
     resultBox.innerHTML = '<p class="text-red-500 text-center">오류가 발생했어요. 다시 시도해주세요.</p>';
   }
 });
